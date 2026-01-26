@@ -1,5 +1,21 @@
 # Week 1 — Technical Direction Foundations
 
+to bootstrap the python environment on MacOS run: 
+``` shell
+curl -fsSL https://raw.githubusercontent.com/michaelgold/buildbpy/refs/heads/main/bootstrap-osx.sh | bash
+```
+
+to boostrap the environment on Windows run:
+
+```powershell
+iwr -Uri https://raw.githubusercontent.com/michaelgold/buildbpy/refs/heads/main/bootstrap-windows.ps1 -OutFile bootstrap-windows.ps1; Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process; .\bootstrap-windows.ps1
+```
+
+to activate the environment run:
+``` shell
+  source .venv/bin/activate
+```
+
 Week 1 introduces students to Blender automation fundamentals and how Technical Directors translate pipeline requirements into reproducible scripts. Each exercise mirrors the course focus on rapid scene setup, lighting, and rendering automation. Scripts are intended to run both from Blender's Scripting workspace and from the command line using `blender --background --python <script.py>`.
 
 ## Prerequisites
