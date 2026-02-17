@@ -265,13 +265,15 @@ def render_to_mp4(
     typer.echo(f"Rendering frames {frame_start} to {frame_end}...")
     
     # Store original settings to restore later
+    original_media_type = scene.render.image_settings.media_type
     original_format = scene.render.image_settings.file_format
     original_filepath = scene.render.filepath
     original_start = scene.frame_start
     original_end = scene.frame_end
     
     try:
-        # Configure FFmpeg output
+        # Configure FFmpeg output - IMPORTANT: Set media_type first!
+        scene.render.image_settings.media_type = 'VIDEO'
         scene.render.image_settings.file_format = 'FFMPEG'
         scene.render.ffmpeg.format = 'MPEG4'
         scene.render.ffmpeg.codec = 'H264'
@@ -291,10 +293,13 @@ def render_to_mp4(
         scene.render.fps_base = 1.0
         
         # Set output path and frame range
+        output_path = output_path.resolve()  # Ensure absolute path
         output_path.parent.mkdir(parents=True, exist_ok=True)
         scene.render.filepath = str(output_path)
         scene.frame_start = frame_start
         scene.frame_end = frame_end
+        
+        typer.echo(f"Output will be written to: {scene.render.filepath}")
         
         # Render animation
         typer.echo(f"Encoding to MP4 with quality={quality} (bitrate={settings['bitrate']}kbps)...")
@@ -322,7 +327,8 @@ def render_to_mp4(
         typer.secho(f"Error during rendering: {e}", fg=typer.colors.RED)
         raise typer.Exit(code=1)
     finally:
-        # Restore original settings
+        # Restore original settings - restore media_type first!
+        scene.render.image_settings.media_type = original_media_type
         scene.render.image_settings.file_format = original_format
         scene.render.filepath = original_filepath
         scene.frame_start = original_start
