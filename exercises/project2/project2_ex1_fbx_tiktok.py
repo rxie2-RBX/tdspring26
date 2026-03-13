@@ -214,8 +214,8 @@ def create(
         int, typer.Option("--start", "-s", help="Animation start frame")
     ] = 1,
     end_frame: Annotated[
-        int, typer.Option("--end", "-e", help="Animation end frame")
-    ] = 250,
+        Optional[int], typer.Option("--end", "-e", help="Animation end frame (defaults to last frame of armature animation)")
+    ] = None,
     no_lights: Annotated[
         bool, typer.Option("--no-lights", help="Skip adding studio lights")
     ] = False,
@@ -256,6 +256,14 @@ def create(
         typer.secho(f"✓ Found armature: {armature.name}", fg=typer.colors.GREEN)
         target = armature
         target_bone = bone
+
+    # Determine end frame if not specified
+    if end_frame is None:
+        end_frame = int(bpy.data.objects['Armature'].animation_data.action.frame_range[1])
+        typer.secho(
+            f"✓ Using armature animation end frame: {end_frame}",
+            fg=typer.colors.GREEN,
+        )
 
     # Step 4: Set frame range
     bpy.context.scene.frame_start = start_frame

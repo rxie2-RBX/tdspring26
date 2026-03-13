@@ -460,8 +460,8 @@ def create(
     """Import an FBX file and create a TikTok-style camera that follows the animation.
 
     Example:
-        blender --background --python week2_ex4_fbx_tiktok.py -- create character.fbx
-        blender --background --python week2_ex4_fbx_tiktok.py -- create character.fbx --output my_scene.blend
+        python project2_ex1_fbx_tiktok_renderer.py create character.fbx
+        python project2_ex1_fbx_tiktok_renderer.py create character.fbx --output my_scene.blend
     """
     typer.secho("🎬 TikTok Camera Setup", fg=typer.colors.CYAN, bold=True)
     typer.echo("=" * 50)
@@ -496,18 +496,11 @@ def create(
 
     # Determine end frame if not specified
     if end_frame is None:
-        if armature and armature.animation_data and armature.animation_data.action:
-            end_frame = int(armature.animation_data.action.frame_range[1])
-            typer.secho(
-                f"✓ Using armature animation end frame: {end_frame}",
-                fg=typer.colors.GREEN,
-            )
-        else:
-            end_frame = 250  # Fallback default
-            typer.secho(
-                f"⚠ No animation data found, using default end frame: {end_frame}",
-                fg=typer.colors.YELLOW,
-            )
+        end_frame = int(bpy.data.objects['Armature'].animation_data.action.frame_range[1])
+        typer.secho(
+            f"✓ Using armature animation end frame: {end_frame}",
+            fg=typer.colors.GREEN,
+        )
 
     # Step 4: Set frame range
     bpy.context.scene.frame_start = start_frame
